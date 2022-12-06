@@ -17,8 +17,6 @@ import VacationDaysStatusViewDetail from "./components/VacationDaysStatusViewDet
 import CalendarManager from "./components/listers/CalendarCards"
 import CalendarDetail from "./components/listers/CalendarDetail"
 
-import SearchCalendarView from "./components/SearchCalendarView"
-import SearchCalendarViewDetail from "./components/SearchCalendarViewDetail"
 import EmployeeManager from "./components/listers/EmployeeCards"
 import EmployeeDetail from "./components/listers/EmployeeDetail"
 
@@ -48,6 +46,7 @@ export default new Router({
                 component: VacationDaysLeftDetail
             },
 
+
             {
                 path: '/vacationStatuses',
                 name: 'VacationStatusView',
@@ -58,6 +57,7 @@ export default new Router({
                 name: 'VacationStatusViewDetail',
                 component: VacationStatusViewDetail
             },
+
             {
                 path: '/vacationDaysStatuses',
                 name: 'VacationDaysStatusView',
@@ -79,16 +79,6 @@ export default new Router({
                 component: CalendarDetail
             },
 
-            {
-                path: '/searchCalendars',
-                name: 'SearchCalendarView',
-                component: SearchCalendarView
-            },
-            {
-                path: '/searchCalendars/:id',
-                name: 'SearchCalendarViewDetail',
-                component: SearchCalendarViewDetail
-            },
             {
                 path: '/employees',
                 name: 'EmployeeManager',

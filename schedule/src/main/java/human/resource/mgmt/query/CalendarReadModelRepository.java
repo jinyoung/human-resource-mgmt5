@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 //@RepositoryRestResource(path = "searchCalendars", collectionResourceRel = "searchCalendars")
 public interface CalendarReadModelRepository
-    extends JpaRepository<Calendar, String> {
+    extends JpaRepository<CalendarReadModel, String> {
     /*
     @Override
     @RestResource(exported = false)
