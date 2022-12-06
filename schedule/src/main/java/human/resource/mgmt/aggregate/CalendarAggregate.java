@@ -5,6 +5,8 @@ import static org.axonframework.modelling.command.AggregateLifecycle.*;
 import human.resource.mgmt.command.*;
 import human.resource.mgmt.event.*;
 import human.resource.mgmt.query.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import lombok.ToString;
@@ -55,16 +57,21 @@ public class CalendarAggregate {
 
     @EventSourcingHandler
     public void on(ScheduleAddedEvent event) {
-        BeanUtils.copyProperties(event, this);
+        Event scheduleEvent = new Event();
+        scheduleEvent.setTitle(event.getTitle());
+        scheduleEvent.setStart(event.getDate());
+
+        this.events.add(scheduleEvent);
     }
 
     @EventSourcingHandler
     public void on(ScheduleCanceledEvent event) {
-        BeanUtils.copyProperties(event, this);
+        //BeanUtils.copyProperties(event, this);
     }
 
     @EventSourcingHandler
     public void on(CalendarRegisteredEvent event) {
         BeanUtils.copyProperties(event, this);
+        this.events = new ArrayList<Event>();
     }
 }
