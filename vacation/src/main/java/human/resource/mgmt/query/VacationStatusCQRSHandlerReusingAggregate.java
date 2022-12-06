@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @ProcessingGroup("vacationStatus")
-public class VacationStatusCQRSHandler {
+public class VacationStatusCQRSHandlerReusingAggregate {
 
     @Autowired
     private VacationReadModelRepository repository;
@@ -29,31 +29,27 @@ public class VacationStatusCQRSHandler {
 
     @QueryHandler
     public Optional<VacationReadModel> handle(VacationStatusSingleQuery query) {
-        return repository.findById(query.get());
+        return repository.findById(query.getId());
     }
 
     @EventHandler
-    public void whenVacationRegistered_then_UPDATE(
+    public void whenVacationRegistered_then_CREATE(
         VacationRegisteredEvent event
     ) throws Exception {
-        repository
-            .findById(event.get())
-            .ifPresent(entity -> {
-                VacationAggregate aggregate = new VacationAggregate();
+        VacationReadModel entity = new VacationReadModel();
+        VacationAggregate aggregate = new VacationAggregate();
+        aggregate.on(event);
 
-                BeanUtils.copyProperties(entity, aggregate);
-                aggregate.on(event);
-                BeanUtils.copyProperties(aggregate, entity);
+        BeanUtils.copyProperties(aggregate, entity);
 
-                repository.save(entity);
-            });
+        repository.save(entity);
     }
 
     @EventHandler
     public void whenVacationCancelled_then_UPDATE(VacationCancelledEvent event)
         throws Exception {
         repository
-            .findById(event.get())
+            .findById(event.getId())
             .ifPresent(entity -> {
                 VacationAggregate aggregate = new VacationAggregate();
 
@@ -69,7 +65,7 @@ public class VacationStatusCQRSHandler {
     public void whenVacationApproved_then_UPDATE(VacationApprovedEvent event)
         throws Exception {
         repository
-            .findById(event.get())
+            .findById(event.getId())
             .ifPresent(entity -> {
                 VacationAggregate aggregate = new VacationAggregate();
 
@@ -85,7 +81,7 @@ public class VacationStatusCQRSHandler {
     public void whenVacationRejected_then_UPDATE(VacationRejectedEvent event)
         throws Exception {
         repository
-            .findById(event.get())
+            .findById(event.getId())
             .ifPresent(entity -> {
                 VacationAggregate aggregate = new VacationAggregate();
 
@@ -101,7 +97,7 @@ public class VacationStatusCQRSHandler {
     public void whenVacationUsed_then_UPDATE(VacationUsedEvent event)
         throws Exception {
         repository
-            .findById(event.get())
+            .findById(event.getId())
             .ifPresent(entity -> {
                 VacationAggregate aggregate = new VacationAggregate();
 

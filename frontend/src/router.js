@@ -10,8 +10,6 @@ import VacationDetail from "./components/listers/VacationDetail"
 import VacationDaysLeftManager from "./components/listers/VacationDaysLeftCards"
 import VacationDaysLeftDetail from "./components/listers/VacationDaysLeftDetail"
 
-import VacationStatusView from "./components/VacationStatusView"
-import VacationStatusViewDetail from "./components/VacationStatusViewDetail"
 import VacationDaysStatusView from "./components/VacationDaysStatusView"
 import VacationDaysStatusViewDetail from "./components/VacationDaysStatusViewDetail"
 import CalendarManager from "./components/listers/CalendarCards"
@@ -46,17 +44,6 @@ export default new Router({
                 component: VacationDaysLeftDetail
             },
 
-
-            {
-                path: '/vacationStatuses',
-                name: 'VacationStatusView',
-                component: VacationStatusView
-            },
-            {
-                path: '/vacationStatuses/:id',
-                name: 'VacationStatusViewDetail',
-                component: VacationStatusViewDetail
-            },
 
             {
                 path: '/vacationDaysStatuses',

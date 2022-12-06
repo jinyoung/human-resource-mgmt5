@@ -24,15 +24,15 @@ public class VacationStatusQueryController {
         this.queryGateway = queryGateway;
     }
 
-    @GetMapping("/vacationStatuses")
+    @GetMapping("/vacations")
     public CompletableFuture findAll(VacationStatusQuery query) {
         return queryGateway
             .query(
                 query,
-                ResponseTypes.multipleInstancesOf(VacationStatus.class)
+                ResponseTypes.multipleInstancesOf(VacationReadModel.class)
             )
             .thenApply(resources -> {
-                List modelList = new ArrayList<EntityModel<VacationStatus>>();
+                List modelList = new ArrayList<EntityModel<VacationReadModel>>();
 
                 resources
                     .stream()
@@ -40,7 +40,7 @@ public class VacationStatusQueryController {
                         modelList.add(hateoas(resource));
                     });
 
-                CollectionModel<VacationStatus> model = CollectionModel.of(
+                CollectionModel<VacationReadModel> model = CollectionModel.of(
                     modelList
                 );
 
@@ -48,7 +48,7 @@ public class VacationStatusQueryController {
             });
     }
 
-    @GetMapping("/vacationStatuses/{id}")
+    @GetMapping("/vacations/{id}")
     public CompletableFuture findById(@PathVariable("id") String id) {
         VacationStatusSingleQuery query = new VacationStatusSingleQuery();
         query.setId(id);
@@ -56,7 +56,7 @@ public class VacationStatusQueryController {
         return queryGateway
             .query(
                 query,
-                ResponseTypes.optionalInstanceOf(VacationStatus.class)
+                ResponseTypes.optionalInstanceOf(VacationReadModel.class)
             )
             .thenApply(resource -> {
                 if (!resource.isPresent()) {
@@ -73,11 +73,25 @@ public class VacationStatusQueryController {
             });
     }
 
-    EntityModel<VacationStatus> hateoas(VacationStatus resource) {
-        EntityModel<VacationStatus> model = EntityModel.of(resource);
+    EntityModel<VacationReadModel> hateoas(VacationReadModel resource) {
+        EntityModel<VacationReadModel> model = EntityModel.of(resource);
+
+        model.add(Link.of("/vacations/" + resource.getId()).withSelfRel());
 
         model.add(
-            Link.of("/vacationStatuses/" + resource.getId()).withSelfRel()
+            Link
+                .of("/vacations/" + resource.getId() + "/cancel")
+                .withRel("cancel")
+        );
+        model.add(
+            Link
+                .of("/vacations/" + resource.getId() + "/approve")
+                .withRel("approve")
+        );
+        model.add(
+            Link
+                .of("/vacations/" + resource.getId() + "/confirmused")
+                .withRel("confirmused")
         );
 
         return model;

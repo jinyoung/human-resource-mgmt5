@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @ProcessingGroup("searchCalendar")
-public class SearchCalendarCQRSHandler {
+public class SearchCalendarCQRSHandlerReusingAggregate {
 
     @Autowired
     private CalendarReadModelRepository repository;
