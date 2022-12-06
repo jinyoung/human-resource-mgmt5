@@ -38,10 +38,12 @@ public class SearchCalendarQueryController {
             
              .thenApply(resources -> {
                 List modelList = new ArrayList<EntityModel<CalendarReadModel>>();
-                
-                resources.stream().forEach(resource ->{
-                    modelList.add(hateoas(resource));
-                });
+
+                resources
+                    .stream()
+                    .forEach(resource -> {
+                        modelList.add(hateoas(resource));
+                    });
 
                 CollectionModel<CalendarReadModel> model = CollectionModel.of(
                     modelList
@@ -65,37 +67,32 @@ public class SearchCalendarQueryController {
                   return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
                 }
 
-                return new ResponseEntity<>(hateoas(resource.get()), HttpStatus.OK);
-            }).exceptionally(ex ->{
-              throw new RuntimeException(ex);
+                return new ResponseEntity<>(
+                    hateoas(resource.get()),
+                    HttpStatus.OK
+                );
+            })
+            .exceptionally(ex -> {
+                throw new RuntimeException(ex);
             });
+    }
 
-  }
+    EntityModel<CalendarReadModel> hateoas(CalendarReadModel resource) {
+        EntityModel<CalendarReadModel> model = EntityModel.of(resource);
 
-  EntityModel<CalendarReadModel> hateoas(CalendarReadModel resource){
-    EntityModel<CalendarReadModel> model = EntityModel.of(
-        resource
-    );
+        model.add(Link.of("/calendars/" + resource.getUserId()).withSelfRel());
 
-    model.add(
-        Link
-        .of("/calendars/" + resource.getUserId())
-        .withSelfRel()
-    );
+        model.add(
+            Link
+                .of("/calendars/" + resource.getUserId() + "/add")
+                .withRel("add")
+        );
+        model.add(
+            Link
+                .of("/calendars/" + resource.getUserId() + "/cancel")
+                .withRel("cancel")
+        );
 
-          model.add(
-              Link
-              .of("/calendars/" + resource.getUserId() + "/add")
-              .withRel("add")
-          );
-          model.add(
-              Link
-              .of("/calendars/" + resource.getUserId() + "/cancel")
-              .withRel("cancel")
-          );
-
-    return model;
-  }
-
-
+        return model;
+    }
 }

@@ -40,17 +40,7 @@ public class QueryController {
                 List modelList = new ArrayList<EntityModel<>>();
                 
                 resources.stream().forEach(resource ->{
-                    EntityModel<> model = EntityModel.of(
-                        resource
-                    );
-
-                    model.add(
-                        Link
-                        .of("/vacationStatuses/" + resource.get())
-                        .withSelfRel()
-                    );
-    
-                    modelList.add(model);
+                    modelList.add(hateoas(resource));
                 });
 
                 CollectionModel<> model = CollectionModel.of(
@@ -63,6 +53,7 @@ public class QueryController {
 
   }
 
+
   @GetMapping("/vacationStatuses/{id}")
   public CompletableFuture findById(@PathVariable("id")  id) {
     SingleQuery query = new SingleQuery();
@@ -74,15 +65,26 @@ public class QueryController {
                   return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
                 }
 
-                EntityModel<> model = EntityModel.of(resource.get());
-                model
-                      .add(Link.of("/vacationStatuses/" + resource.get().get()).withSelfRel());
-              
-                return new ResponseEntity<>(model, HttpStatus.OK);
+                return new ResponseEntity<>(hateoas(resource.get()), HttpStatus.OK);
             }).exceptionally(ex ->{
               throw new RuntimeException(ex);
             });
 
+  }
+
+  EntityModel<> hateoas( resource){
+    EntityModel<> model = EntityModel.of(
+        resource
+    );
+
+    model.add(
+        Link
+        .of("/vacationStatuses/" + resource.get())
+        .withSelfRel()
+    );
+
+
+    return model;
   }
 
 
