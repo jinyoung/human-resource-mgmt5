@@ -1,6 +1,5 @@
 package human.resource.mgmt.query;
 
-import human.resource.mgmt.aggregate.*;
 import human.resource.mgmt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.Optional;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,98 +18,65 @@ import org.springframework.stereotype.Service;
 public class VacationDaysStatusCQRSHandler {
 
     @Autowired
-    private VacationReadModelRepository repository;
+    private VacationDaysStatusRepository vacationDaysStatusRepository;
 
     @QueryHandler
-    public List<VacationReadModel> handle(VacationDaysStatusQuery query) {
-        return repository.findAll();
-    }
-
-    @QueryHandler
-    public Optional<VacationReadModel> handle(
-        VacationDaysStatusSingleQuery query
-    ) {
-        return repository.findById(query.get());
+    public List<VacationDaysStatus> handle(VacationDaysStatusQuery query) {
+        return vacationDaysStatusRepository.findAll();
     }
 
     @EventHandler
-    public void whenVacationRegistered_then_UPDATE(
-        VacationRegisteredEvent event
+    public void whenVacationDaysIntialized_then_CREATE_1(
+        VacationDaysIntializedEvent vacationDaysIntialized
     ) throws Exception {
-        repository
-            .findById(event.get())
-            .ifPresent(entity -> {
-                VacationAggregate aggregate = new VacationAggregate();
-
-                BeanUtils.copyProperties(entity, aggregate);
-                aggregate.on(event);
-                BeanUtils.copyProperties(aggregate, entity);
-
-                repository.save(entity);
-            });
+        // view 객체 생성
+        VacationDaysStatus vacationDaysStatus = new VacationDaysStatus();
+        // view 객체에 이벤트의 Value 를 set 함
+        vacationDaysStatus.setUserId(vacationDaysIntialized.getUserId());
+        vacationDaysStatus.setDaysLeft(vacationDaysIntialized.getDayCount());
+        // view 레파지 토리에 save
+        vacationDaysStatusRepository.save(vacationDaysStatus);
     }
 
     @EventHandler
-    public void whenVacationCancelled_then_UPDATE(VacationCancelledEvent event)
-        throws Exception {
-        repository
-            .findById(event.get())
-            .ifPresent(entity -> {
-                VacationAggregate aggregate = new VacationAggregate();
+    public void whenVacationDaysAdded_then_UPDATE_1(
+        VacationDaysAddedEvent vacationDaysAdded
+    ) throws Exception {
+        // view 객체 조회
+        Optional<VacationDaysStatus> vacationDaysStatusOptional = vacationDaysStatusRepository.findById(
+            vacationDaysAdded.getUserId()
+        );
 
-                BeanUtils.copyProperties(entity, aggregate);
-                aggregate.on(event);
-                BeanUtils.copyProperties(aggregate, entity);
-
-                repository.save(entity);
-            });
+        if (vacationDaysStatusOptional.isPresent()) {
+            VacationDaysStatus vacationDaysStatus = vacationDaysStatusOptional.get();
+            // view 객체에 이벤트의 eventDirectValue 를 set 함
+            vacationDaysStatus.setDaysLeft(
+                vacationDaysStatus.getDaysLeft() +
+                vacationDaysAdded.getDayCount()
+            );
+            // view 레파지 토리에 save
+            vacationDaysStatusRepository.save(vacationDaysStatus);
+        }
     }
 
     @EventHandler
-    public void whenVacationApproved_then_UPDATE(VacationApprovedEvent event)
-        throws Exception {
-        repository
-            .findById(event.get())
-            .ifPresent(entity -> {
-                VacationAggregate aggregate = new VacationAggregate();
+    public void whenVacationDaysUsed_then_UPDATE_2(
+        VacationDaysUsedEvent vacationDaysUsed
+    ) throws Exception {
+        // view 객체 조회
+        Optional<VacationDaysStatus> vacationDaysStatusOptional = vacationDaysStatusRepository.findById(
+            vacationDaysUsed.getUserId()
+        );
 
-                BeanUtils.copyProperties(entity, aggregate);
-                aggregate.on(event);
-                BeanUtils.copyProperties(aggregate, entity);
-
-                repository.save(entity);
-            });
-    }
-
-    @EventHandler
-    public void whenVacationRejected_then_UPDATE(VacationRejectedEvent event)
-        throws Exception {
-        repository
-            .findById(event.get())
-            .ifPresent(entity -> {
-                VacationAggregate aggregate = new VacationAggregate();
-
-                BeanUtils.copyProperties(entity, aggregate);
-                aggregate.on(event);
-                BeanUtils.copyProperties(aggregate, entity);
-
-                repository.save(entity);
-            });
-    }
-
-    @EventHandler
-    public void whenVacationUsed_then_UPDATE(VacationUsedEvent event)
-        throws Exception {
-        repository
-            .findById(event.get())
-            .ifPresent(entity -> {
-                VacationAggregate aggregate = new VacationAggregate();
-
-                BeanUtils.copyProperties(entity, aggregate);
-                aggregate.on(event);
-                BeanUtils.copyProperties(aggregate, entity);
-
-                repository.save(entity);
-            });
+        if (vacationDaysStatusOptional.isPresent()) {
+            VacationDaysStatus vacationDaysStatus = vacationDaysStatusOptional.get();
+            // view 객체에 이벤트의 eventDirectValue 를 set 함
+            vacationDaysStatus.setDaysLeft(
+                vacationDaysStatus.getDaysLeft() -
+                vacationDaysUsed.getDayCount()
+            );
+            // view 레파지 토리에 save
+            vacationDaysStatusRepository.save(vacationDaysStatus);
+        }
     }
 }
