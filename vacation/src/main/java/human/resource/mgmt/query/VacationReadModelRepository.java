@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 //@RepositoryRestResource(path = "vacationStatuses", collectionResourceRel = "vacationStatuses")
 public interface VacationReadModelRepository
-    extends JpaRepository<Vacation, String> {
+    extends JpaRepository<VacationReadModel, String> {
     /*
     @Override
     @RestResource(exported = false)

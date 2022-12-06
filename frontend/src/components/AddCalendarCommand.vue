@@ -7,6 +7,8 @@
 
         <v-card-text>
             <String label="Title" v-model="value.title" :editMode="editMode"/>
+            <Date label="From" v-model="value.from" :editMode="editMode"/>
+            <Date label="To" v-model="value.to" :editMode="editMode"/>
         </v-card-text>
 
         <v-card-actions>
@@ -43,6 +45,8 @@
         }),
         created() {
             this.value.title = '';
+            this.value.from = '2022-12-06';
+            this.value.to = '2022-12-06';
         },
         watch: {
         },

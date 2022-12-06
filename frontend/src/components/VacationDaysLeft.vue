@@ -271,6 +271,8 @@
             closeUse() {
                 this.useDiagram = false;
             },
+
+
         },
     }
 </script>
