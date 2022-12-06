@@ -37,17 +37,7 @@ public class SearchCalendarQueryController {
                 resources
                     .stream()
                     .forEach(resource -> {
-                        EntityModel<CalendarReadModel> model = EntityModel.of(
-                            resource
-                        );
-
-                        model.add(
-                            Link
-                                .of("/calendars/" + resource.getUserId())
-                                .withSelfRel()
-                        );
-
-                        modelList.add(model);
+                        modelList.add(hateoas(resource));
                     });
 
                 CollectionModel<CalendarReadModel> model = CollectionModel.of(
@@ -73,19 +63,32 @@ public class SearchCalendarQueryController {
                     return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
                 }
 
-                EntityModel<CalendarReadModel> model = EntityModel.of(
-                    resource.get()
+                return new ResponseEntity<>(
+                    hateoas(resource.get()),
+                    HttpStatus.OK
                 );
-                model.add(
-                    Link
-                        .of("/calendars/" + resource.get().getUserId())
-                        .withSelfRel()
-                );
-
-                return new ResponseEntity<>(model, HttpStatus.OK);
             })
             .exceptionally(ex -> {
                 throw new RuntimeException(ex);
             });
+    }
+
+    EntityModel<CalendarReadModel> hateoas(CalendarReadModel resource) {
+        EntityModel<CalendarReadModel> model = EntityModel.of(resource);
+
+        model.add(Link.of("/calendars/" + resource.getUserId()).withSelfRel());
+
+        model.add(
+            Link
+                .of("/calendars/" + resource.getUserId() + "/add")
+                .withRel("add")
+        );
+        model.add(
+            Link
+                .of("/calendars/" + resource.getUserId() + "/cancel")
+                .withRel("cancel")
+        );
+
+        return model;
     }
 }
