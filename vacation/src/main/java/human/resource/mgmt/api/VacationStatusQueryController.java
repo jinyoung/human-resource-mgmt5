@@ -1,91 +1,85 @@
 package human.resource.mgmt.api;
 
-import java.util.List;
+import human.resource.mgmt.query.*;
 import java.util.ArrayList;
-
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-import human.resource.mgmt.query.*;
-
-
-  
 @RestController
-public class QueryController {
+public class VacationStatusQueryController {
 
-  private final QueryGateway queryGateway;
+    private final QueryGateway queryGateway;
 
+    public VacationStatusQueryController(QueryGateway queryGateway) {
+        this.queryGateway = queryGateway;
+    }
 
-  public QueryController(QueryGateway queryGateway) {
-      this.queryGateway = queryGateway;
-  }
-  
+    @GetMapping("/vacationStatuses")
+    public CompletableFuture findAll(VacationStatusQuery query) {
+        return queryGateway
+            .query(
+                query,
+                ResponseTypes.multipleInstancesOf(VacationStatus.class)
+            )
+            .thenApply(resources -> {
+                List modelList = new ArrayList<EntityModel<VacationStatus>>();
 
-  @GetMapping("/vacationStatuses")
-  public CompletableFuture findAll(Query query) {
-      return queryGateway.query(query , ResponseTypes.multipleInstancesOf(.class))
-            
-             .thenApply(resources -> {
-                List modelList = new ArrayList<EntityModel<>>();
-                
-                resources.stream().forEach(resource ->{
-                    modelList.add(hateoas(resource));
-                });
+                resources
+                    .stream()
+                    .forEach(resource -> {
+                        modelList.add(hateoas(resource));
+                    });
 
-                CollectionModel<> model = CollectionModel.of(
+                CollectionModel<VacationStatus> model = CollectionModel.of(
                     modelList
                 );
 
                 return new ResponseEntity<>(model, HttpStatus.OK);
             });
-            
+    }
 
-  }
+    @GetMapping("/vacationStatuses/{id}")
+    public CompletableFuture findById(@PathVariable("id") String id) {
+        VacationStatusSingleQuery query = new VacationStatusSingleQuery();
+        query.setId(id);
 
-
-  @GetMapping("/vacationStatuses/{id}")
-  public CompletableFuture findById(@PathVariable("id")  id) {
-    SingleQuery query = new SingleQuery();
-    query.set(id);
-
-      return queryGateway.query(query, ResponseTypes.optionalInstanceOf(.class))
-              .thenApply(resource -> {
-                if(!resource.isPresent()){
-                  return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return queryGateway
+            .query(
+                query,
+                ResponseTypes.optionalInstanceOf(VacationStatus.class)
+            )
+            .thenApply(resource -> {
+                if (!resource.isPresent()) {
+                    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
                 }
 
-                return new ResponseEntity<>(hateoas(resource.get()), HttpStatus.OK);
-            }).exceptionally(ex ->{
-              throw new RuntimeException(ex);
+                return new ResponseEntity<>(
+                    hateoas(resource.get()),
+                    HttpStatus.OK
+                );
+            })
+            .exceptionally(ex -> {
+                throw new RuntimeException(ex);
             });
+    }
 
-  }
+    EntityModel<VacationStatus> hateoas(VacationStatus resource) {
+        EntityModel<VacationStatus> model = EntityModel.of(resource);
 
-  EntityModel<> hateoas( resource){
-    EntityModel<> model = EntityModel.of(
-        resource
-    );
+        model.add(
+            Link.of("/vacationStatuses/" + resource.getId()).withSelfRel()
+        );
 
-    model.add(
-        Link
-        .of("/vacationStatuses/" + resource.get())
-        .withSelfRel()
-    );
-
-
-    return model;
-  }
-
-
+        return model;
+    }
 }
