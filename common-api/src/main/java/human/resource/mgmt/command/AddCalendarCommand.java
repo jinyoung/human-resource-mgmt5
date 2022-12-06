@@ -1,5 +1,7 @@
 package human.resource.mgmt.command;
 
+import human.resource.mgmt.query.*;
+import java.util.List;
 import lombok.Data;
 import lombok.ToString;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
@@ -12,4 +14,6 @@ public class AddCalendarCommand {
     private String userId;
 
     private String title;
+    private Date from;
+    private Date to;
 }
