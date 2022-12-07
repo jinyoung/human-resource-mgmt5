@@ -52,6 +52,7 @@ public class VacationController {
 
                 resource.setId((String) id);
 
+                //TODO: change to hateoas
                 EntityModel<VacationAggregate> model = EntityModel.of(resource);
                 model.add(
                     Link.of("/vacations/" + resource.getId()).withSelfRel()
@@ -68,11 +69,12 @@ public class VacationController {
     )
     public CompletableFuture cancel(
         @PathVariable("id") String id,
-        @RequestBody CancelCommand cancelCommand
+        @RequestBody CancelCommand cancelCommand   //TODO: if command doesn't have any attribute except the id, body must be ignored
     ) throws Exception {
         System.out.println("##### /vacation/cancel  called #####");
         cancelCommand.setId(id);
-        // send command
+        // send command  
+        //TODO: return HATEOAS entity as result
         return commandGateway.send(cancelCommand);
     }
 

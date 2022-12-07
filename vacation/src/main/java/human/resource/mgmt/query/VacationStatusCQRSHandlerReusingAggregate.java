@@ -1,5 +1,6 @@
 package human.resource.mgmt.query;
 
+import human.resource.mgmt.aggregate.*;
 import human.resource.mgmt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Optional;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class VacationStatusCQRSHandlerReusingAggregate {
 
     @Autowired
-    private VacationStatusRepository vacationStatusRepository;
+    private VacationReadModelRepository repository;
 
     @QueryHandler
     public List<VacationReadModel> handle(VacationStatusQuery query) {
@@ -51,13 +53,12 @@ public class VacationStatusCQRSHandlerReusingAggregate {
             .ifPresent(entity -> {
                 VacationAggregate aggregate = new VacationAggregate();
 
-        if (vacationStatusOptional.isPresent()) {
-            VacationStatus vacationStatus = vacationStatusOptional.get();
-            // view 객체에 이벤트의 eventDirectValue 를 set 함
-            vacationStatus.setStatus("APPROVED");
-            // view 레파지 토리에 save
-            vacationStatusRepository.save(vacationStatus);
-        }
+                BeanUtils.copyProperties(entity, aggregate);
+                aggregate.on(event);
+                BeanUtils.copyProperties(aggregate, entity);
+
+                repository.save(entity);
+            });
     }
 
     @EventHandler

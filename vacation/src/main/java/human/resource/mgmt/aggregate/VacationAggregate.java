@@ -72,6 +72,7 @@ public class VacationAggregate {
         BeanUtils.copyProperties(event, this);
     }
 
+    //TODO: 
     @EventSourcingHandler
     public void on(VacationCancelledEvent event) {
         setStatus("CANCELLED");
