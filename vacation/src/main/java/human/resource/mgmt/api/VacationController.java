@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+//<<< Clean Arch / Inbound Adaptor
 @RestController
 public class VacationController {
 
@@ -52,13 +53,7 @@ public class VacationController {
 
                 resource.setId((String) id);
 
-                //TODO: change to hateoas
-                EntityModel<VacationAggregate> model = EntityModel.of(resource);
-                model.add(
-                    Link.of("/vacations/" + resource.getId()).withSelfRel()
-                );
-
-                return new ResponseEntity<>(model, HttpStatus.OK);
+                return new ResponseEntity<>(hateoas(resource), HttpStatus.OK);
             });
     }
 
@@ -69,12 +64,11 @@ public class VacationController {
     )
     public CompletableFuture cancel(
         @PathVariable("id") String id,
-        @RequestBody CancelCommand cancelCommand   //TODO: if command doesn't have any attribute except the id, body must be ignored
+        @RequestBody CancelCommand cancelCommand
     ) throws Exception {
         System.out.println("##### /vacation/cancel  called #####");
         cancelCommand.setId(id);
-        // send command  
-        //TODO: return HATEOAS entity as result
+        // send command
         return commandGateway.send(cancelCommand);
     }
 
@@ -122,4 +116,31 @@ public class VacationController {
 
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
+
+    EntityModel<VacationAggregate> hateoas(VacationAggregate resource) {
+        EntityModel<VacationAggregate> model = EntityModel.of(resource);
+
+        model.add(Link.of("/vacations/" + resource.getId()).withSelfRel());
+
+        model.add(
+            Link
+                .of("/vacations/" + resource.getId() + "/cancel")
+                .withRel("cancel")
+        );
+
+        model.add(
+            Link
+                .of("/vacations/" + resource.getId() + "/approve")
+                .withRel("approve")
+        );
+
+        model.add(
+            Link
+                .of("/vacations/" + resource.getId() + "/confirmused")
+                .withRel("confirmused")
+        );
+
+        return model;
+    }
 }
+//>>> Clean Arch / Inbound Adaptor
