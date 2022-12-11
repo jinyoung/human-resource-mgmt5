@@ -1,5 +1,11 @@
 <template>
     <div>
+
+
+
+            <SearchCalendarQuery @search="search"></SearchCalendarQuery>
+
+
         <h1 style = "margin-left:4.5%; margin-top:-10px;">Calendar</h1>
         <v-col style="margin-bottom:40px;">
             <div class="text-center">
@@ -58,13 +64,22 @@
             openDialog : false,
         }),
         async created() {
+            await this.search();
+        },
+        async search(query) {
             var me = this;
             if(me.offline){
                 if(!me.values) me.values = [];
                 return;
             } 
 
-            var temp = await axios.get(axios.fixUrl('/calendars'))
+            var temp = null;
+            if(query!=null){
+                temp = await axios.get(axios.fixUrl('/calendars/' + query.apiPath), {params: query.parameters})
+            }else{
+                temp = await axios.get(axios.fixUrl('/calendars'))
+            }
+
             me.values = temp.data._embedded.calendars;
             
             me.newValue = {

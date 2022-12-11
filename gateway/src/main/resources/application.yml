@@ -11,7 +11,7 @@ spring:
         - id: vacation
           uri: http://localhost:8081
           predicates:
-            - Path=/vacations/**, /vacationDaysLefts/**, /vacationStatuses/**, /vacationDaysStatuses/**
+            - Path=/vacations/**, /vacationDaysLefts/**, /vacationDaysStatuses/**, /vacationStatuses/**
         - id: schedule
           uri: http://localhost:8082
           predicates:
@@ -46,7 +46,7 @@ spring:
         - id: vacation
           uri: http://vacation:8080
           predicates:
-            - Path=/vacations/**, /vacationDaysLefts/**, /vacationStatuses/**, /vacationDaysStatuses/**
+            - Path=/vacations/**, /vacationDaysLefts/**, /vacationDaysStatuses/**, /vacationStatuses/**
         - id: schedule
           uri: http://schedule:8080
           predicates:
