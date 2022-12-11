@@ -47,8 +47,8 @@ const pluralCaseList = []
 pluralCaseList.push( {plural: "vacations", pascal: "Vacation"} )
 pluralCaseList.push( {plural: "vacationDaysLefts", pascal: "VacationDaysLeft"} )
 
-pluralCaseList.push( {plural: "vacationStatuses", pascal: "VacationStatus"} )
 pluralCaseList.push( {plural: "vacationDaysStatuses", pascal: "VacationDaysStatus"} )
+pluralCaseList.push( {plural: "vacationStatuses", pascal: "VacationStatus"} )
 pluralCaseList.push( {plural: "calendars", pascal: "Calendar"} )
 
 pluralCaseList.push( {plural: "searchCalendars", pascal: "SearchCalendar"} )

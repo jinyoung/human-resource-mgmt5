@@ -6,6 +6,9 @@
         </v-card-title>
 
         <v-card-text>
+            <Date label="From" v-model="value.parameters.from" :editMode="editMode"/>
+            <Date label="To" v-model="value.parameters.to" :editMode="editMode"/>
+            <String label="Title" v-model="value.parameters.title" :editMode="editMode"/>
         </v-card-text>
 
         <v-card-actions>
@@ -36,11 +39,9 @@
             },
         }),
         created() {
-            this.value.parameters.id = '';
-            this.value.parameters.startDate = '2022-12-12';
-            this.value.parameters.endDate = '2022-12-12';
-            this.value.parameters.reason = '';
-            this.value.parameters.status = '';
+            this.value.parameters.from = '2022-12-12';
+            this.value.parameters.to = '2022-12-12';
+            this.value.parameters.title = '';
         },
         watch: {
         },

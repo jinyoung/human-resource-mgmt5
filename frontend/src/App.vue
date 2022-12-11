@@ -63,16 +63,6 @@
 
                     <v-list-item
                         class="px-2"
-                        key="vacationStatuses"
-                        to="vacationStatuses"
-                        @click="changeUrl()"
-                        color="deep-purple lighten-2"
-                        style="font-weight:700;"
-                    >
-                        VacationStatus
-                    </v-list-item>
-                    <v-list-item
-                        class="px-2"
                         key="vacationDaysStatuses"
                         to="vacationDaysStatuses"
                         @click="changeUrl()"
@@ -80,6 +70,16 @@
                         style="font-weight:700;"
                     >
                         VacationDaysStatus
+                    </v-list-item>
+                    <v-list-item
+                        class="px-2"
+                        key="vacationStatuses"
+                        to="vacationStatuses"
+                        @click="changeUrl()"
+                        color="deep-purple lighten-2"
+                        style="font-weight:700;"
+                    >
+                        VacationStatus
                     </v-list-item>
 
                     <v-list-item
@@ -219,13 +219,13 @@
                                     class="mx-auto"
                                     outlined
                                     rounded
-                                    key="vacationStatuses"
-                                    to="/vacationStatuses"
+                                    key="vacationDaysStatuses"
+                                    to="/vacationDaysStatuses"
                                     @click="changeUrl()"
                                     color="deep-purple lighten-2"
                                     style="font-weight:500; font-size:20px; padding:15px;"
                                 >
-                                    VacationStatus
+                                    VacationDaysStatus
                                 </v-btn>
                             </v-card-actions>
                         </v-card>
@@ -248,13 +248,13 @@
                                     class="mx-auto"
                                     outlined
                                     rounded
-                                    key="vacationDaysStatuses"
-                                    to="/vacationDaysStatuses"
+                                    key="vacationStatuses"
+                                    to="/vacationStatuses"
                                     @click="changeUrl()"
                                     color="deep-purple lighten-2"
                                     style="font-weight:500; font-size:20px; padding:15px;"
                                 >
-                                    VacationDaysStatus
+                                    VacationStatus
                                 </v-btn>
                             </v-card-actions>
                         </v-card>

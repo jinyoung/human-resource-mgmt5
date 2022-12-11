@@ -39,7 +39,9 @@
             },
         }),
         created() {
-            this.value.parameters.id = 0;
+            this.value.parameters.from = '2022-12-12';
+            this.value.parameters.to = '2022-12-12';
+            this.value.parameters.userId = '';
         },
         watch: {
         },
