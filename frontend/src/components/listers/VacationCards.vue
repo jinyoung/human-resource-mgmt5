@@ -1,5 +1,11 @@
 <template>
     <div>
+
+
+
+            sss<VacationStatusQuery></VacationStatusQuery>
+
+
         <h1 style = "margin-left:4.5%; margin-top:-10px;">Vacation</h1>
         <v-col style="margin-bottom:40px;">
             <div class="text-center">
@@ -58,18 +64,27 @@
             openDialog : false,
         }),
         async created() {
+            await this.search();
+        },
+        async search(query) {
             var me = this;
             if(me.offline){
                 if(!me.values) me.values = [];
                 return;
             } 
 
-            var temp = await axios.get(axios.fixUrl('/vacations'))
+            var temp = null;
+            if(query!=null){
+                temp = await axios.get(axios.fixUrl('/vacations/' + query.apiPath), {params: query.parameters})
+            }else{
+                temp = await axios.get(axios.fixUrl('/vacations'))
+            }
+
             me.values = temp.data._embedded.vacations;
             
             me.newValue = {
-                'startDate': '2022-12-06',
-                'endDate': '2022-12-06',
+                'startDate': '2022-12-12',
+                'endDate': '2022-12-12',
                 'reason': '',
                 'userId': '',
                 'days': 0,

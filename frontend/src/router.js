@@ -15,7 +15,7 @@ import VacationDaysStatusViewDetail from "./components/VacationDaysStatusViewDet
 import CalendarManager from "./components/listers/CalendarCards"
 import CalendarDetail from "./components/listers/CalendarDetail"
 
-import EmployeeManager from "./components/listers/EmployeeCards"
+//import EmployeeManager from "./components/listers/EmployeeCards"
 import EmployeeDetail from "./components/listers/EmployeeDetail"
 
 
@@ -66,11 +66,11 @@ export default new Router({
                 component: CalendarDetail
             },
 
-            {
-                path: '/employees',
-                name: 'EmployeeManager',
-                component: EmployeeManager
-            },
+            // {
+            //     path: '/employees',
+            //     name: 'EmployeeManager',
+            //     component: EmployeeManager
+            // },
             {
                 path: '/employees/:id',
                 name: 'EmployeeDetail',
