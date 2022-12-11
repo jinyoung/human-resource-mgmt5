@@ -57,16 +57,12 @@ public class CalendarAggregate {
 
     @EventSourcingHandler
     public void on(ScheduleAddedEvent event) {
-        Event scheduleEvent = new Event();
-        scheduleEvent.setTitle(event.getTitle());
-        scheduleEvent.setStart(event.getDate());
-
-        this.events.add(scheduleEvent);
+        BeanUtils.copyProperties(event, this);
     }
 
     @EventSourcingHandler
     public void on(ScheduleCanceledEvent event) {
-        //BeanUtils.copyProperties(event, this);
+        BeanUtils.copyProperties(event, this);
     }
 
     @EventSourcingHandler
