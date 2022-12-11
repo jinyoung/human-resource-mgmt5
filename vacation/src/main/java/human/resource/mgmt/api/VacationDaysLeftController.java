@@ -84,16 +84,7 @@ public class VacationDaysLeftController {
 
                 resource.setUserId((String) id);
 
-                EntityModel<VacationDaysLeftAggregate> model = EntityModel.of(
-                    resource
-                );
-                model.add(
-                    Link
-                        .of("/vacationDaysLefts/" + resource.getUserId())
-                        .withSelfRel()
-                );
-
-                return new ResponseEntity<>(model, HttpStatus.OK);
+                return new ResponseEntity<>(hateoas(resource), HttpStatus.OK);
             });
     }
 
@@ -110,5 +101,29 @@ public class VacationDaysLeftController {
         );
 
         return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    EntityModel<VacationDaysLeftAggregate> hateoas(
+        VacationDaysLeftAggregate resource
+    ) {
+        EntityModel<VacationDaysLeftAggregate> model = EntityModel.of(resource);
+
+        model.add(
+            Link.of("/vacationDaysLefts/" + resource.getUserId()).withSelfRel()
+        );
+
+        model.add(
+            Link
+                .of("/vacationDaysLefts/" + resource.getUserId() + "/add")
+                .withRel("add")
+        );
+
+        model.add(
+            Link
+                .of("/vacationDaysLefts/" + resource.getUserId() + "/use")
+                .withRel("use")
+        );
+
+        return model;
     }
 }

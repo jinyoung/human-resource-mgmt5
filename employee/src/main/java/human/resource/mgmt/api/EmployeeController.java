@@ -51,12 +51,7 @@ public class EmployeeController {
 
                 resource.setUserId((String) id);
 
-                EntityModel<EmployeeAggregate> model = EntityModel.of(resource);
-                model.add(
-                    Link.of("/employees/" + resource.getUserId()).withSelfRel()
-                );
-
-                return new ResponseEntity<>(model, HttpStatus.OK);
+                return new ResponseEntity<>(hateoas(resource), HttpStatus.OK);
             });
     }
 
@@ -88,5 +83,19 @@ public class EmployeeController {
         );
 
         return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    EntityModel<EmployeeAggregate> hateoas(EmployeeAggregate resource) {
+        EntityModel<EmployeeAggregate> model = EntityModel.of(resource);
+
+        model.add(Link.of("/employees/" + resource.getUserId()).withSelfRel());
+
+        model.add(
+            Link
+                .of("/employees/" + resource.getUserId() + "/resign")
+                .withRel("resign")
+        );
+
+        return model;
     }
 }

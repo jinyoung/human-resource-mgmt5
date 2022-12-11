@@ -52,12 +52,7 @@ public class VacationController {
 
                 resource.setId((String) id);
 
-                EntityModel<VacationAggregate> model = EntityModel.of(resource);
-                model.add(
-                    Link.of("/vacations/" + resource.getId()).withSelfRel()
-                );
-
-                return new ResponseEntity<>(model, HttpStatus.OK);
+                return new ResponseEntity<>(hateoas(resource), HttpStatus.OK);
             });
     }
 
@@ -119,5 +114,31 @@ public class VacationController {
         );
 
         return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    EntityModel<VacationAggregate> hateoas(VacationAggregate resource) {
+        EntityModel<VacationAggregate> model = EntityModel.of(resource);
+
+        model.add(Link.of("/vacations/" + resource.getId()).withSelfRel());
+
+        model.add(
+            Link
+                .of("/vacations/" + resource.getId() + "/cancel")
+                .withRel("cancel")
+        );
+
+        model.add(
+            Link
+                .of("/vacations/" + resource.getId() + "/approve")
+                .withRel("approve")
+        );
+
+        model.add(
+            Link
+                .of("/vacations/" + resource.getId() + "/confirmused")
+                .withRel("confirmused")
+        );
+
+        return model;
     }
 }

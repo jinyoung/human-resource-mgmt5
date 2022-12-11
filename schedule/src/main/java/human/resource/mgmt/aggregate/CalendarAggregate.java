@@ -54,14 +54,10 @@ public class CalendarAggregate {
     }
 
     @EventSourcingHandler
-    public void on(ScheduleAddedEvent event) {
-        BeanUtils.copyProperties(event, this);
-    }
+    public void on(ScheduleAddedEvent event) {}
 
     @EventSourcingHandler
-    public void on(ScheduleCanceledEvent event) {
-        BeanUtils.copyProperties(event, this);
-    }
+    public void on(ScheduleCanceledEvent event) {}
 
     @EventSourcingHandler
     public void on(CalendarRegisteredEvent event) {

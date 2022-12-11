@@ -82,12 +82,7 @@ public class CalendarController {
 
                 resource.setUserId((String) id);
 
-                EntityModel<CalendarAggregate> model = EntityModel.of(resource);
-                model.add(
-                    Link.of("/calendars/" + resource.getUserId()).withSelfRel()
-                );
-
-                return new ResponseEntity<>(model, HttpStatus.OK);
+                return new ResponseEntity<>(hateoas(resource), HttpStatus.OK);
             });
     }
 
@@ -104,5 +99,25 @@ public class CalendarController {
         );
 
         return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    EntityModel<CalendarAggregate> hateoas(CalendarAggregate resource) {
+        EntityModel<CalendarAggregate> model = EntityModel.of(resource);
+
+        model.add(Link.of("/calendars/" + resource.getUserId()).withSelfRel());
+
+        model.add(
+            Link
+                .of("/calendars/" + resource.getUserId() + "/add")
+                .withRel("add")
+        );
+
+        model.add(
+            Link
+                .of("/calendars/" + resource.getUserId() + "/cancel")
+                .withRel("cancel")
+        );
+
+        return model;
     }
 }
