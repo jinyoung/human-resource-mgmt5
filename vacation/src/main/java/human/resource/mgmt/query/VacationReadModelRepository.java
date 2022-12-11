@@ -1,5 +1,7 @@
 package human.resource.mgmt.query;
 
+import java.util.Date;
+
 // import org.springframework.data.rest.core.annotation.RestResource;
 // import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
@@ -9,6 +11,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 //@RepositoryRestResource(path = "vacationStatuses", collectionResourceRel = "vacationStatuses")
 public interface VacationReadModelRepository
     extends JpaRepository<VacationReadModel, String> {
+
+
+        public List<VacationReadModel> findAllByStartDateBetween(Date from, Date to);
     /*
     @Override
     @RestResource(exported = false)

@@ -1,5 +1,11 @@
 <template>
     <div>
+
+
+
+            <VacationStatusQuery @search="search"></VacationStatusQuery>
+
+
         <h1 style = "margin-left:4.5%; margin-top:-10px;">Vacation</h1>
         <v-col style="margin-bottom:40px;">
             <div class="text-center">
@@ -10,7 +16,7 @@
                         hide-overlay
                         transition="dialog-bottom-transition"
                 >
-                    <Calendar :offline="offline" class="video-card" :isNew="true" :editMode="true" v-model="newValue" 
+                    <Vacation :offline="offline" class="video-card" :isNew="true" :editMode="true" v-model="newValue" 
                             @add="append" v-if="tick"/>
 
                     <v-btn
@@ -33,7 +39,7 @@
             </div>
         </v-col>
         <v-row>
-            <Calendar :offline="offline" class="video-card" v-for="(value, index) in values" v-model="values[index]" v-bind:key="index" @delete="remove"/>
+            <Vacation :offline="offline" class="video-card" v-for="(value, index) in values" v-model="values[index]" v-bind:key="index" @delete="remove"/>
         </v-row>
     </div>
 </template>
@@ -41,12 +47,12 @@
 <script>
 
     const axios = require('axios').default;
-    import Calendar from './../Calendar.vue';
+    import Vacation from './../Vacation.vue';
 
     export default {
-        name: 'CalendarManager',
+        name: 'VacationManager',
         components: {
-            Calendar,
+            Vacation,
         },
         props: {
             offline: Boolean
@@ -60,31 +66,33 @@
         async created() {
             await this.search();
         },
-        async search(query) {
-            var me = this;
-            if(me.offline){
-                if(!me.values) me.values = [];
-                return;
-            } 
-
-            var temp = null;
-            if(query!=null){
-                temp = await axios.get(axios.fixUrl('/calendars/' + query.apiPath), {params: query.parameters})
-            }else{
-                temp = await axios.get(axios.fixUrl('/calendars'))
-            }
-
-            me.values = temp.data._embedded.calendars;
-            
-            me.newValue = {
-                'startDate': '2022-12-06',
-                'endDate': '2022-12-06',
-                'reason': '',
-                'userId': '',
-                'events': [],
-            }
-        },
         methods:{
+            async search(query) {
+                var me = this;
+                if(me.offline){
+                    if(!me.values) me.values = [];
+                    return;
+                } 
+
+                var temp = null;
+                if(query!=null){
+                    temp = await axios.get(axios.fixUrl('/vacations/' + query.apiPath), {params: query.parameters})
+                }else{
+                    temp = await axios.get(axios.fixUrl('/vacations'))
+                }
+
+                me.values = temp.data._embedded.vacations;
+                
+                me.newValue = {
+                    'startDate': '2022-12-12',
+                    'endDate': '2022-12-12',
+                    'reason': '',
+                    'userId': '',
+                    'days': 0,
+                    'status': '',
+                }
+            },
+
             closeDialog(){
                 this.openDialog = false
             },

@@ -1,5 +1,6 @@
 <template>
 
+
     <v-card style="width:450px;" outlined>
         <template slot="progress">
             <v-progress-linear
@@ -8,6 +9,7 @@
                     indeterminate
             ></v-progress-linear>
         </template>
+
 
         <v-card-title v-if="value._links">
             Vacation # {{value._links.self.href.split("/")[value._links.self.href.split("/").length - 1]}}

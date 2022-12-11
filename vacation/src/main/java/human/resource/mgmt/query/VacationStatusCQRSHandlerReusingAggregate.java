@@ -24,7 +24,13 @@ public class VacationStatusCQRSHandlerReusingAggregate {
 
     @QueryHandler
     public List<VacationReadModel> handle(VacationStatusQuery query) {
-        return repository.findAll();
+
+        //TODO
+        if(query.getFrom()!=null){
+            return repository.findAllByStartDateBetween(query.getFrom(), query.getTo());
+        }else{
+            return repository.findAll();
+        }
     }
 
     @QueryHandler

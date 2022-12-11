@@ -7,6 +7,8 @@ import human.resource.mgmt.event.*;
 import human.resource.mgmt.query.*;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+
 import lombok.Data;
 import lombok.ToString;
 import org.axonframework.commandhandling.CommandHandler;
@@ -38,9 +40,13 @@ public class VacationAggregate {
         BeanUtils.copyProperties(command, event);
 
         //Please uncomment here and implement the createUUID method.
-        //event.setId(createUUID());
+        event.setId(createUUID());
 
         apply(event);
+    }
+
+    private String createUUID() {
+        return UUID.randomUUID().toString();
     }
 
     @CommandHandler
