@@ -68,7 +68,6 @@
 			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
 
-//<<< Etc / RSocket
         <dependency>
             <groupId>org.axonframework.extensions.reactor</groupId>
             <artifactId>axon-reactor-spring-boot-starter</artifactId>
@@ -82,7 +81,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-rsocket</artifactId>
         </dependency>
-//>>> Etc / RSocket
 
 		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>

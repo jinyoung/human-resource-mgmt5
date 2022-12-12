@@ -45,6 +45,9 @@
 </template>
 
 <script>
+    import { RSocketClient } from 'rsocket-core';
+    import RSocketWebSocketClient from 'rsocket-websocket-client';
+    import { IdentitySerializer, JsonSerializer } from "rsocket-core/build";
 
     const axios = require('axios').default;
     import Vacation from './../Vacation.vue';
@@ -64,9 +67,114 @@
             openDialog : false,
         }),
         async created() {
-            await this.search();
+            //await this.search();
+
+            // const rsocket = await this.createClient({
+            //     host: 'https://7000-jinyoung-humanresourcem-gu87xqf8hmd.ws-us78.gitpod.io',
+            //     port: 7000,
+            // });
+
+            // alert(rsocket);
+
+            const transport = new RSocketWebSocketClient(
+                {
+                    url: `wss://7000-jinyoung-humanresourcem-gu87xqf8hmd.ws-us78.gitpod.io/rsocket`
+                }
+            );
+            const client = new RSocketClient({
+                // send/receive JSON objects instead of strings/buffers
+                serializers: {
+                data: JsonSerializer,
+                metadata: IdentitySerializer
+                },
+                setup: {
+                // ms btw sending keepalive to server
+                keepAlive: 60000,
+                // ms timeout if no keep-alive response
+                lifetime: 180000,
+                dataMimeType: "application/json",
+                metadataMimeType: 'message/x.rsocket.routing.v0'
+                },
+                transport
+            });
+            client.connect().subscribe({
+                onComplete: socket => {
+                let requestedMsg = 10;
+                let processedMsg = 0;
+
+                // console.log("connected to rsocket"); // debug
+                const endpoint = "vacations.1.get"
+                socket.requestStream({
+                    data: {},
+                    metadata: String.fromCharCode(endpoint.length) + endpoint
+                })
+                    .subscribe({
+                        /*
+                        we create an infinite stream and to do so, in the callback
+                        of the onNext event we request new messages every time
+                        the client received the previously requested n messages
+                        */
+                        onSubscribe: (sub) => {
+                            console.log("subscribed to server stream"); // debug
+                            this.requestStreamSubscription = sub
+                            this.requestStreamSubscription.request(requestedMsg)
+                        },
+                        onNext: (e) => {
+                        // this.surveyResponses.push(e.data)
+                        // // handle incoming data, update series in the corresponding chart
+                        // this.addSurveyResponseToSeries(e.data)
+                        // // count processed messages, when the buffer is full, request more from the socket
+                        // processedMsg++;
+                        // if (processedMsg >= requestedMsg) {
+                        //     this.requestStreamSubscription.request(requestedMsg);
+                        //     processedMsg = 0;
+                        // }
+                        },
+                        onError: error => {
+                        // console.log("got error with requestStream"); // debug
+                        console.error(error);
+                        },
+                        onComplete: () => {
+                        // console.log("requestStream completed"); // debug
+                        }
+                    });
+                },
+                onError: error => {
+                // console.log("got connection error"); // debug
+                console.error(error);
+                },
+                // eslint-disable-next-line no-unused-vars
+                onSubscribe: cancel => {
+                /* call cancel() to abort */
+                }
+            });
+
         },
+
         methods:{
+
+            // async createClient(options) {
+            //     const client = new RSocketClient({
+            //         setup: {
+            //             dataMimeType: 'text/plain',
+            //             keepAlive: 1000000, // avoid sending during test
+            //             lifetime: 100000,
+            //             metadataMimeType: 'text/plain',
+            //         },
+            //         transport: new RSocketWebsocketClient({
+            //             host: options.host,
+            //             port: options.port,
+            //         }),
+            //     });
+
+            //     return client.connect();
+            // },
+
+
+            // rsocket stuff
+
+
+                   
             async search(query) {
                 var me = this;
                 if(me.offline){

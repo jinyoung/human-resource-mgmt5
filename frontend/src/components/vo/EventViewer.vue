@@ -42,8 +42,6 @@
         methods:{
 
             async load(){
-                var me = this;
-
                 var result = await axios.get(axios.fixUrl(this.src));
                 this.events = result.data._embedded.genericDomainEventMessageList
               
