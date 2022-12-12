@@ -11,6 +11,9 @@ import java.util.Optional;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
+//<<< Etc / RSocket
+import org.axonframework.queryhandling.QueryUpdateEmitter;
+//>>> Etc / RSocket
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,11 @@ public class VacationStatusCQRSHandlerReusingAggregate {
 
     @Autowired
     private VacationReadModelRepository repository;
+
+//<<< Etc / RSocket
+    @Autowired
+    private QueryUpdateEmitter queryUpdateEmitter;
+//>>> Etc / RSocket
 
     @QueryHandler
     public List<VacationReadModel> handle(VacationStatusQuery query) {
@@ -49,6 +57,12 @@ public class VacationStatusCQRSHandlerReusingAggregate {
         BeanUtils.copyProperties(aggregate, entity);
 
         repository.save(entity);
+//<<< Etc / RSocket
+        queryUpdateEmitter.emit(
+            VacationStatusQuery.class,
+            query -> true,
+            entity);
+//>>> Etc / RSocket
     }
 
     @EventHandler

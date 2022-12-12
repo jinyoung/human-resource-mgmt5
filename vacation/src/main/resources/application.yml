@@ -23,6 +23,14 @@ spring:
     password: rootpassword
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+
+//<<< Etc / RSocket
+  rsocket:
+    server:
+      mapping-path: /rsocket
+      transport: websocket
+      port: 7000
+//>>> Etc / RSocket
 server:
   port: 8081
 ---

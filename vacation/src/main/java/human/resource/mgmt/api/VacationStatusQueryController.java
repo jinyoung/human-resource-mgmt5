@@ -1,9 +1,17 @@
 package human.resource.mgmt.api;
-
 import human.resource.mgmt.query.*;
+
+//<<< Etc / RSocket 
+import reactor.core.publisher.Flux;
+import org.axonframework.extensions.reactor.queryhandling.gateway.ReactorQueryGateway;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+//>>> Etc / RSocket 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.hateoas.CollectionModel;
@@ -19,9 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class VacationStatusQueryController {
 
     private final QueryGateway queryGateway;
+    private final ReactorQueryGateway reactorQueryGateway;
 
-    public VacationStatusQueryController(QueryGateway queryGateway) {
+    public VacationStatusQueryController(QueryGateway queryGateway, ReactorQueryGateway reactorQueryGateway) {
         this.queryGateway = queryGateway;
+        this.reactorQueryGateway = reactorQueryGateway;
     }
 
     @GetMapping("/vacations")
@@ -101,4 +111,13 @@ public class VacationStatusQueryController {
 
         return model;
     }
+
+//<<< Etc / RSocket
+    // Request-Stream
+    @MessageMapping("vacations.{vacationId}.get")
+    public Flux<VacationReadModel> vacation_subscribe(@DestinationVariable String vacationId) {
+        return reactorQueryGateway
+                .subscriptionQueryMany(new VacationStatusQuery(), VacationReadModel.class);
+    }
+//>>> Etc / RSocket
 }
