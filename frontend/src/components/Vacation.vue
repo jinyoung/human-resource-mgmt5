@@ -25,6 +25,13 @@
             <String label="UserId" v-model="value.userId" :editMode="editMode"/>
             <Number label="Days" v-model="value.days" :editMode="editMode"/>
             <String label="Status" v-model="value.status" :editMode="editMode"/>
+
+href: {{value._links.events.href}}
+            <EventViewer
+                v-if="value._links.events"
+                :src="value._links.events.href"
+            >
+            </EventViewer>
         </v-card-text>
 
         <v-card-actions>
@@ -94,6 +101,8 @@
             >
                 ConfirmUsed
             </v-btn>
+
+
         </v-card-actions>
 
         <v-snackbar
@@ -125,6 +134,7 @@
             isNew: Boolean,
             offline: Boolean,
         },
+        
         data: () => ({
             snackbar: {
                 status: false,
